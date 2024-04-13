@@ -10,8 +10,6 @@
 - User: dbs311_241zaa02
 - Passwd: 19235267
 
-- ![Alt text](Screenshot 2024-04-13 111044.png)
-
 # Local instalation
 
 - C:\dbs311
