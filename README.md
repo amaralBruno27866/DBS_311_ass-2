@@ -21,4 +21,8 @@
 - Procedure: find_customer - done!
 - Procedure: find_product - done!
 - Procedure: generate_order_id - done!
-
+- Procedure: add_order - done!
+- Procedure: add_order_item - done!
+- Procedure: customer_order - done!
+- Procedure: display_order_status - done!
+- Procedure: cancel_order - done!

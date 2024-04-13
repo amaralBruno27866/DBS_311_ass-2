@@ -76,3 +76,120 @@ EXCEPTION
         RETURN NULL;
 END generate_order_id;
 /
+
+-- Add_Order
+CREATE OR REPLACE PROCEDURE add_order(
+    customer_id IN NUMBER,
+    new_order_id OUT NUMBER
+) AS
+BEGIN
+    -- Generate a new order ID
+    new_order_id := generate_order_id();
+
+    -- Add a new order with the generated ID, provided customer ID, and other default values
+    INSERT INTO Orders (order_id, customer_id, status, salesman_id, order_date)
+    VALUES (new_order_id, customer_id, 'Shipped', 56, SYSDATE);
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Order ID already exists.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+END add_order;
+/
+
+-- Add_Order_Item
+CREATE OR REPLACE PROCEDURE add_order_item(
+    orderId IN order_items.order_id%type,
+    itemId IN order_items.item_id%type, 
+    productId IN order_items.product_id%type, 
+    quantity IN order_items.quantity%type,
+    price IN order_items.unit_price%type
+) AS
+BEGIN
+    -- Insert the provided values into the order_items table
+    INSERT INTO order_items (order_id, item_id, product_id, quantity, unit_price)
+    VALUES (orderId, itemId, productId, quantity, price);
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Order item already exists.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+END add_order_item;
+/
+
+-- Customer_Order
+CREATE OR REPLACE PROCEDURE customer_order(
+    customerId IN NUMBER,
+    orderId IN OUT NUMBER
+) AS
+BEGIN
+    -- Check if an order with the provided order ID exists for the customer
+    SELECT COUNT(*)
+    INTO orderId
+    FROM Orders
+    WHERE customer_id = customerId AND order_id = orderId;
+
+    -- If no order was found, set orderId to 0
+    IF orderId = 0 THEN
+        orderId := 0;
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        orderId := 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+END customer_order;
+/
+
+-- Display_Order_Status
+CREATE OR REPLACE PROCEDURE display_order_status(
+    orderId IN NUMBER,
+    status OUT orders.status%type
+) AS
+BEGIN
+    -- Get the status of the order with the provided ID
+    SELECT status
+    INTO status
+    FROM Orders
+    WHERE order_id = orderId;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        status := NULL;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+END display_order_status;
+/
+
+-- Cancel_order
+CREATE OR REPLACE PROCEDURE cancel_order(
+    orderId IN NUMBER,
+    cancelStatus OUT NUMBER
+) AS
+    orderStatus orders.status%type;
+BEGIN
+    -- Get the status of the order with the provided ID
+    SELECT status
+    INTO orderStatus
+    FROM Orders
+    WHERE order_id = orderId;
+
+    -- Check the status of the order and set cancelStatus accordingly
+    IF orderStatus IS NULL THEN
+        cancelStatus := 0;
+    ELSIF orderStatus = 'Canceled' THEN
+        cancelStatus := 1;
+    ELSIF orderStatus = 'Shipped' THEN
+        cancelStatus := 2;
+    ELSE
+        UPDATE Orders
+        SET status = 'Canceled'
+        WHERE order_id = orderId;
+        cancelStatus := 3;
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        cancelStatus := 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+END cancel_order;
+/
