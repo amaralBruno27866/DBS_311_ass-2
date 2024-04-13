@@ -18,5 +18,6 @@
 # Steps
 
 - Visual Studio Code settings: Done!
+- Procedure: find_customer - done!
 
 
