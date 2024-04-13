@@ -52,8 +52,8 @@ int main(void)
 
     /* Used Variables */
     string str;
-    string user = "username";
-    string pass = "password";
+    string user = "dbs311_241zaa02";
+    string pass = "19235267";
     string constr = "myoracle12c.senecacollege.ca:1521/oracle12c";
 
     try {
@@ -88,7 +88,7 @@ int main(void)
 
             }
         } while (option != 0);
-
+        /*Encerramos e fechamos a conexão e o ambiente, quando o programa termina*/
         env->terminateConnection(conn);
         Environment::terminateEnvironment(env);
 
