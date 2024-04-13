@@ -5,6 +5,11 @@
 - User Name: dbs311group2
 - Passwd: group2
 
+# Oracle Data Base
+
+- User: dbs311_241zaa02
+- Passwd: 19235267
+
 # Local instalation
 
 - C:\dbs311
@@ -13,3 +18,5 @@
 # Steps
 
 - Visual Studio Code settings: Done!
+
+
