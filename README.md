@@ -19,5 +19,6 @@
 
 - Visual Studio Code settings: Done!
 - Procedure: find_customer - done!
-
+- Procedure: find_product - done!
+- Procedure: generate_order_id - done!
 
