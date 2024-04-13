@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\BeaglePC\\OneDrive - Seneca\\Desktop\\DBS_Assignment_2_Solution\\",
+  "WorkspaceRootPath": "C:\\Users\\BeaglePC\\Documents\\Seneca\\Seneca\\DBS\\Assignment\\a2\\DBS_311_ass-2\\DBS_Assignment_2_Solution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{20690C2D-B869-41FC-AA77-5C20A8101AEC}|DBS_Assignment_2\\DBS_Assignment_2.vcxproj|C:\\Users\\BeaglePC\\OneDrive - Seneca\\Desktop\\DBS_Assignment_2_Solution\\DBS_Assignment_2\\application.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{20690C2D-B869-41FC-AA77-5C20A8101AEC}|DBS_Assignment_2\\DBS_Assignment_2.vcxproj|C:\\Users\\BeaglePC\\Documents\\Seneca\\Seneca\\DBS\\Assignment\\a2\\DBS_311_ass-2\\DBS_Assignment_2_Solution\\DBS_Assignment_2\\application.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{20690C2D-B869-41FC-AA77-5C20A8101AEC}|DBS_Assignment_2\\DBS_Assignment_2.vcxproj|solutionrelative:DBS_Assignment_2\\application.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -28,11 +28,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "application.cpp",
-              "DocumentMoniker": "C:\\Users\\BeaglePC\\OneDrive - Seneca\\Desktop\\DBS_Assignment_2_Solution\\DBS_Assignment_2\\application.cpp",
+              "DocumentMoniker": "C:\\Users\\BeaglePC\\Documents\\Seneca\\Seneca\\DBS\\Assignment\\a2\\DBS_311_ass-2\\DBS_Assignment_2_Solution\\DBS_Assignment_2\\application.cpp",
               "RelativeDocumentMoniker": "DBS_Assignment_2\\application.cpp",
-              "ToolTip": "C:\\Users\\BeaglePC\\OneDrive - Seneca\\Desktop\\DBS_Assignment_2_Solution\\DBS_Assignment_2\\application.cpp",
+              "ToolTip": "C:\\Users\\BeaglePC\\Documents\\Seneca\\Seneca\\DBS\\Assignment\\a2\\DBS_311_ass-2\\DBS_Assignment_2_Solution\\DBS_Assignment_2\\application.cpp",
               "RelativeToolTip": "DBS_Assignment_2\\application.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAIUBAAAAAAAA",
+              "ViewState": "AQIAAGUAAAAAAAAAAAAAAHsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-04-11T12:43:33.102Z",
               "EditorCaption": ""
