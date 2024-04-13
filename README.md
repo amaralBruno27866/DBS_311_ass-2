@@ -24,3 +24,7 @@
 - Procedure: customer_order - done!
 - Procedure: display_order_status - done!
 - Procedure: cancel_order - done!
+
+# C++ Functions implementations
+- Function: displayOrderStatus - done!
+- Function: cancelOrder - done!

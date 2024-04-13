@@ -88,7 +88,7 @@ int main(void)
 
             }
         } while (option != 0);
-        /*Encerramos e fechamos a conexão e o ambiente, quando o programa termina*/
+        /*We close and close the connection and the environment, when the program ends*/
         env->terminateConnection(conn);
         Environment::terminateEnvironment(env);
 
@@ -205,12 +205,90 @@ void customerService(Connection* conn, int customerId) {
 
 //Complete this function
 void displayOrderStatus(Connection* conn, int orderId, int customerId) {
+    Statement* stmt = nullptr;
+    int orderExists = 0;
+    string status;
 
+    // Call the stored procedure 'customer_order' to confirm if the entered order ID belongs to the customer
+    stmt = conn->createStatement("BEGIN customer_order(:1, :2); END;");
+    stmt->setInt(1, customerId);
+    stmt->setInt(2, orderId);
+    stmt->registerOutParam(2, Type::OCCIINT, sizeof(orderExists));
+    stmt->executeUpdate();
+    orderExists = stmt->getInt(2);
+    conn->terminateStatement(stmt);
+
+    // If the second parameter of 'customer_order' is zero, display "Order ID is not valid."
+    if (orderExists == 0) {
+        cout << "Order ID is not valid." << endl;
+        return;
+    }
+
+    // If the order ID is valid, call 'display_order_status' to get the order status
+    stmt = conn->createStatement("BEGIN display_order_status(:1, :2); END;");
+    stmt->setInt(1, orderId);
+    stmt->registerOutParam(2, Type::OCCISTRING, sizeof(status));
+    stmt->executeUpdate();
+    status = stmt->getString(2);
+    conn->terminateStatement(stmt);
+
+    // If the order status is null, display "Order does not exist."
+    if (status.empty()) {
+        cout << "Order does not exist." << endl;
+    }
+    else {
+        // If the status is not null, display an appropriate message
+        cout << "Order is " << status << "." << endl;
+    }
 }
 
 //Complete this function
 void cancelOrder(Connection* conn, int orderId, int customerId) {
+    Statement* stmt = nullptr;
+    int orderExists = 0;
+    int cancelStatus = 0;
 
+    // Call the stored procedure 'customer_order' to confirm if the entered order ID belongs to the customer
+    stmt = conn->createStatement("BEGIN customer_order(:1, :2); END;");
+    stmt->setInt(1, customerId);
+    stmt->setInt(2, orderId);
+    stmt->registerOutParam(2, Type::OCCIINT, sizeof(orderExists));
+    stmt->executeUpdate();
+    orderExists = stmt->getInt(2);
+    conn->terminateStatement(stmt);
+
+    // If the second parameter of 'customer_order' is zero, display "Order ID is not valid."
+    if (orderExists == 0) {
+        cout << "Order ID is not valid." << endl;
+        return;
+    }
+
+    // If the order ID is valid, call 'cancel_order' to try to cancel the order
+    stmt = conn->createStatement("BEGIN cancel_order(:1, :2); END;");
+    stmt->setInt(1, orderId);
+    stmt->registerOutParam(2, Type::OCCIINT, sizeof(cancelStatus));
+    stmt->executeUpdate();
+    cancelStatus = stmt->getInt(2);
+    conn->terminateStatement(stmt);
+
+    // Display an appropriate message based on the cancel status
+    switch (cancelStatus) {
+    case 0:
+        cout << "The order does not exist." << endl;
+        break;
+    case 1:
+        cout << "The order has been already canceled." << endl;
+        break;
+    case 2:
+        cout << "The order is shipped and cannot be canceled." << endl;
+        break;
+    case 3:
+        cout << "The order is canceled successfully." << endl;
+        break;
+    default:
+        cout << "Unexpected error." << endl;
+        break;
+    }
 }
 
 void createEnvironement(Environment* env) {
