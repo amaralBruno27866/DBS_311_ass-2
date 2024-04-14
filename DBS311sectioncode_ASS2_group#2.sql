@@ -1,30 +1,17 @@
 -- Find Costumers
-CREATE OR REPLACE PROCEDURE find_customer(
+CREATE OR REPLACE PROCEDURE find_customer (
     customer_id IN NUMBER,
     found OUT NUMBER
 ) AS
-    -- Declare a variable to store the query result
-    customer_count NUMBER;
 BEGIN
-    -- Initialize the variable
-    customer_count := 0;
-    
-    -- Count the number of customers with the provided ID
-    SELECT COUNT(*)
-    INTO customer_count
-    FROM CUSTOMERS
-    WHERE Customer_id = customer_id;
-
-    -- If a customer was found, set 'found' to 1
-    IF customer_count > 0 THEN
-        found := 1;
-    ELSE
-        found := 0;
-    END IF;
-
+    SELECT 1 INTO found FROM customers WHERE customer_id = find_customer.customer_id;
 EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        found := 0;
+    WHEN TOO_MANY_ROWS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Multiple customers found for the given ID.');
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
 END find_customer;
 /
 
@@ -90,45 +77,32 @@ END add_order_item;
 /
 
 -- Customer_Order
-CREATE OR REPLACE PROCEDURE customer_order(
+CREATE OR REPLACE PROCEDURE customer_order (
     customerId IN NUMBER,
     orderId IN OUT NUMBER
 ) AS
 BEGIN
-    -- Check if an order with the provided order ID exists for the customer
-    SELECT COUNT(*)
-    INTO orderId
-    FROM Orders
-    WHERE customer_id = customerId AND order_id = orderId;
-
-    -- If no order was found, set orderId to 0
-    IF orderId = 0 THEN
-        orderId := 0;
-    END IF;
+    SELECT order_id INTO orderId FROM orders WHERE customer_id = customer_order.customerId AND order_id = customer_order.orderId;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         orderId := 0;
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
 END customer_order;
 /
 
 -- Display_Order_Status
-CREATE OR REPLACE PROCEDURE display_order_status(
+CREATE OR REPLACE PROCEDURE display_order_status (
     orderId IN NUMBER,
-    status OUT orders.status%type
+    status OUT orders.status%TYPE
 ) AS
 BEGIN
-    -- Get the status of the order with the provided ID
-    SELECT status
-    INTO status
-    FROM Orders
-    WHERE order_id = orderId;
+    SELECT status INTO status FROM orders WHERE order_id = orderId;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         status := NULL;
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
 END display_order_status;
 /
 
@@ -164,4 +138,33 @@ EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
 END cancel_order;
+/
+
+-- Find_Produc
+CREATE OR REPLACE PROCEDURE find_product (
+    productId IN NUMBER,
+    price OUT NUMBER,
+    productName OUT VARCHAR2
+) AS
+    current_month VARCHAR2(20);
+BEGIN
+    SELECT TO_CHAR(SYSDATE, 'MON') INTO current_month FROM DUAL;
+
+    SELECT list_price, product_name
+    INTO price, productName
+    FROM products
+    WHERE product_id = productId;
+
+    IF current_month IN ('NOV', 'DEC') AND productId IN (2, 5) THEN
+        price := price * 0.9; -- 10% discount in Nov and Dec for categories 2 and 5
+    END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        price := 0;
+    WHEN TOO_MANY_ROWS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Multiple products found for the given ID.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
+END find_product;
 /

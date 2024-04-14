@@ -8,6 +8,9 @@
 
 #include <iomanip>
 
+
+
+
 using oracle::occi::Environment;
 using oracle::occi::Connection;
 
@@ -27,7 +30,7 @@ struct Product {
 };
 
 int mainMenu();
-int subMenu(); 
+int subMenu();
 void customerService(Connection* conn, int customerId);
 void displayOrderStatus(Connection* conn, int orderId, int customerId); // you write this function
 void cancelOrder(Connection* conn, int orderId, int customerId); // you write this function
@@ -36,10 +39,11 @@ void openConnection(Environment* env, Connection* conn, string user, string pass
 void closeConnection(Connection* conn, Environment* env);
 void teminateEnvironement(Environment* env);
 int customerLogin(Connection* conn, int customerId);
-void findProduct(Connection* conn, int product_id, struct Product *product);
+void findProduct(Connection* conn, int product_id, struct Product* product);
 int addToCart(Connection* conn, struct ShoppingCart cart[]);
 void displayProducts(struct ShoppingCart cart[], int productCount);
 int checkout(Connection* conn, struct ShoppingCart cart[], int customerId, int productCount);
+
 
 int main(void)
 {
@@ -56,6 +60,7 @@ int main(void)
     string pass = "19235267";
     string constr = "myoracle12c.senecacollege.ca:1521/oracle12c";
 
+
     try {
         // create environement and Open the connction
         env = Environment::createEnvironment(Environment::DEFAULT);
@@ -64,7 +69,7 @@ int main(void)
         int customerId = 0;
 
         do {
-            
+
             option = mainMenu();
             switch (option) {
 
@@ -72,7 +77,7 @@ int main(void)
 
                 cout << "Enter the customer ID: ";
                 cin >> customerId;
-               
+
                 if (customerLogin(conn, customerId) == 1) {
                     //call customerService()
                     customerService(conn, customerId);
@@ -84,11 +89,11 @@ int main(void)
             case 0:
                 cout << "Good bye!..." << endl;
                 break;
-                
+
 
             }
         } while (option != 0);
-        /*We close and close the connection and the environment, when the program ends*/
+
         env->terminateConnection(conn);
         Environment::terminateEnvironment(env);
 
@@ -169,16 +174,16 @@ void customerService(Connection* conn, int customerId) {
 
         case 1:
 
-            cout << ">-------- Place an order ---------<";
-            
+            //cout << ">-------- Place an order ---------<";
+
             productCount = addToCart(conn, cart);
             displayProducts(cart, productCount);
             checkedout = checkout(conn, cart, customerId, productCount);
             if (checkedout) {
-               cout << "The order is successfully completed." << endl;
+                cout << "The order is successfully completed." << endl;
             }
             else {
-               cout << "The order is cancelled." << endl;
+                cout << "The order is cancelled." << endl;
             }
             break;
         case 2:
@@ -188,7 +193,7 @@ void customerService(Connection* conn, int customerId) {
             displayOrderStatus(conn, orderId, customerId);
             break;
         case 3:
-            
+
             cout << ">-------- Cancel an Order --------<" << endl;
             cout << "Enter an order ID: ";
             cin >> orderId;
@@ -333,6 +338,7 @@ int customerLogin(Connection* conn, int customerId) {
     conn->terminateStatement(stmt);
 
     return found;
+
 }
 
 int addToCart(Connection* conn, struct ShoppingCart cart[]) {
@@ -340,7 +346,7 @@ int addToCart(Connection* conn, struct ShoppingCart cart[]) {
     int productCount = 0;
     int addMore = 1;
     double price = 0;
-    
+
     Product product;
 
     cout << "-------------- Add Products to Cart --------------" << endl;
@@ -357,10 +363,10 @@ int addToCart(Connection* conn, struct ShoppingCart cart[]) {
             findProduct(conn, product_id, &product);
 
             /*if the price is zero, the product does not exist
-              if the price is greater than zero the product display the following 
+              if the price is greater than zero the product display the following
               output:
               Product Price:*/
-            
+
             if (product.price != 0) {
                 cout << "Product Name: " << product.name << endl;
                 cout << "Product Price: " << product.price << endl;
@@ -371,6 +377,8 @@ int addToCart(Connection* conn, struct ShoppingCart cart[]) {
             else {
                 cout << "The product does not exists. Try again..." << endl;
             }
+
+
         } while (product.price == 0);
 
         cout << "Enter the product Quantity: ";
@@ -384,24 +392,29 @@ int addToCart(Connection* conn, struct ShoppingCart cart[]) {
         while (addMore != 0 && addMore != 1) {
             cout << "Invalide input. Enter 1 to add more products or 0 to checkout: ";
             cin >> addMore;
+
         }
+
+
     }
 
     return productCount;
+
 }
 
-void findProduct(Connection* conn, int productId, struct Product *product) {
+void findProduct(Connection* conn, int productId, struct Product* product) {
     Statement* stmt = nullptr;
     double found = 0;
 
     stmt = conn->createStatement("BEGIN find_product(:1, :2, :3); END;");
     stmt->setInt(1, productId);
-    stmt->registerOutParam(2, Type::OCCIDOUBLE, sizeof(product->price));    
+    stmt->registerOutParam(2, Type::OCCIDOUBLE, sizeof(product->price));
     stmt->registerOutParam(3, Type::OCCISTRING, sizeof(product->name));
     stmt->executeUpdate();
     product->price = stmt->getDouble(2);
     product->name = stmt->getString(3);
     conn->terminateStatement(stmt);
+
 }
 
 
@@ -420,6 +433,7 @@ void displayProducts(struct ShoppingCart cart[], int productCount) {
 
     cout << "----------------------------------" << endl;
     cout << "Total: " << total << endl;
+
 }
 
 int checkout(Connection* conn, struct ShoppingCart cart[], int customerId, int productCount) {
@@ -461,7 +475,9 @@ int checkout(Connection* conn, struct ShoppingCart cart[], int customerId, int p
 
         conn->commit();
         conn->terminateStatement(stmt);
+
     }
 
     return !exit;
 }
+
