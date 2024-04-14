@@ -1,3 +1,6 @@
+-- Bruno Amaral
+-- 143766228
+
 -- Find Costumers
 CREATE OR REPLACE PROCEDURE find_customer (
     customer_id IN NUMBER,
@@ -77,17 +80,27 @@ END add_order_item;
 /
 
 -- Customer_Order
-CREATE OR REPLACE PROCEDURE customer_order (
+CREATE OR REPLACE PROCEDURE customer_order(
     customerId IN NUMBER,
     orderId IN OUT NUMBER
 ) AS
+    orderCount NUMBER;
 BEGIN
-    SELECT order_id INTO orderId FROM orders WHERE customer_id = customer_order.customerId AND order_id = customer_order.orderId;
+    -- Check if an order with the provided order ID exists for the customer
+    SELECT COUNT(*)
+    INTO orderCount
+    FROM Orders
+    WHERE customer_id = customerId AND order_id = orderId;
+
+    -- If no order was found, set orderId to 0
+    IF orderCount = 0 THEN
+        orderId := 0;
+    END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         orderId := 0;
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
 END customer_order;
 /
 
