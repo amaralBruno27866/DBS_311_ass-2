@@ -12,7 +12,7 @@ BEGIN
     -- Count the number of customers with the provided ID
     SELECT COUNT(*)
     INTO customer_count
-    FROM Customers  -- Replace 'Customers' with the actual name of your customer table
+    FROM CUSTOMERS
     WHERE Customer_id = customer_id;
 
     -- If a customer was found, set 'found' to 1
@@ -23,37 +23,9 @@ BEGIN
     END IF;
 
 EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        found := 0;
-    WHEN TOO_MANY_ROWS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: More than one customer with the same ID found.');
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
 END find_customer;
-/
-
--- Find Product
-CREATE OR REPLACE PROCEDURE find_product(
-    productId IN NUMBER,
-    price OUT products.list_price%TYPE,
-    productName OUT products.product_name%TYPE
-) AS
-BEGIN
-    -- Look for the product with the provided ID
-    SELECT product_name, list_price
-    INTO productName, price
-    FROM Products  -- Replace 'Products' with the actual name of your product table
-    WHERE Product_id = productId;
-
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        price := 0;
-        productName := 'Not Found';
-    WHEN TOO_MANY_ROWS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: More than one product with the same ID found.');
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
-END find_product;
 /
 
 -- Gemerate Order ID
@@ -64,7 +36,7 @@ BEGIN
     -- Find the maximum order ID in the Orders table
     SELECT NVL(MAX(order_id), 0) + 1
     INTO new_order_id
-    FROM Orders;  -- Replace 'Orders' with the actual name of your orders table
+    FROM ORDERS;
 
     -- Return the new order ID
     RETURN new_order_id;
