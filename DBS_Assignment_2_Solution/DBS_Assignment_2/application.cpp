@@ -1,3 +1,6 @@
+// Bruno Amaral
+// 143766228
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <occi.h>
@@ -214,17 +217,15 @@ void displayOrderStatus(Connection* conn, int orderId, int customerId) {
     int orderExists = 0;
     string status;
 
-    // Call the stored procedure 'customer_order' to confirm if the entered order ID belongs to the customer
-    stmt = conn->createStatement("BEGIN customer_order(:1, :2); END;");
-    stmt->setInt(1, customerId);
-    stmt->setInt(2, orderId);
-    stmt->registerOutParam(2, Type::OCCIINT, sizeof(orderExists));
+    stmt = conn->createStatement("BEGIN display_order_status(:1, :2); END;");
+    stmt->setInt(1, orderId);
+    stmt->registerOutParam(2, Type::OCCISTRING, sizeof(status));
     stmt->executeUpdate();
-    orderExists = stmt->getInt(2);
+    status = stmt->getString(2);
     conn->terminateStatement(stmt);
 
     // If the second parameter of 'customer_order' is zero, display "Order ID is not valid."
-    if (orderExists == 0) {
+    if (&status == NULL) {
         cout << "Order ID is not valid." << endl;
         return;
     }
@@ -252,18 +253,17 @@ void cancelOrder(Connection* conn, int orderId, int customerId) {
     Statement* stmt = nullptr;
     int orderExists = 0;
     int cancelStatus = 0;
+    string status;
 
-    // Call the stored procedure 'customer_order' to confirm if the entered order ID belongs to the customer
-    stmt = conn->createStatement("BEGIN customer_order(:1, :2); END;");
-    stmt->setInt(1, customerId);
-    stmt->setInt(2, orderId);
-    stmt->registerOutParam(2, Type::OCCIINT, sizeof(orderExists));
+    stmt = conn->createStatement("BEGIN display_order_status(:1, :2); END;");
+    stmt->setInt(1, orderId);
+    stmt->registerOutParam(2, Type::OCCISTRING, sizeof(status));
     stmt->executeUpdate();
-    orderExists = stmt->getInt(2);
+    status = stmt->getString(2);
     conn->terminateStatement(stmt);
 
     // If the second parameter of 'customer_order' is zero, display "Order ID is not valid."
-    if (orderExists == 0) {
+    if (&status == NULL) {
         cout << "Order ID is not valid." << endl;
         return;
     }

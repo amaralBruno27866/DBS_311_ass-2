@@ -80,27 +80,22 @@ END add_order_item;
 /
 
 -- Customer_Order
-CREATE OR REPLACE PROCEDURE customer_order(
+CREATE OR REPLACE PROCEDURE customer_order (
     customerId IN NUMBER,
     orderId IN OUT NUMBER
-) AS
-    orderCount NUMBER;
+)
+IS
 BEGIN
-    -- Check if an order with the provided order ID exists for the customer
-    SELECT COUNT(*)
-    INTO orderCount
-    FROM Orders
-    WHERE customer_id = customerId AND order_id = orderId;
+    SELECT order_id INTO orderId
+    FROM orders
+    WHERE customer_id = customer_order.customerId
+    AND order_id = customer_order.orderId;
 
-    -- If no order was found, set orderId to 0
-    IF orderCount = 0 THEN
-        orderId := 0;
-    END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         orderId := 0;
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END customer_order;
 /
 
